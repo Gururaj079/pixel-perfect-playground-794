@@ -38,7 +38,7 @@ function build(): Rec[] {
       SUBJECTS.forEach((sub) => {
         TERMS.forEach((t, ti) => {
           let score: number | null = Math.round(
-            Math.min(100, Math.max(18, base[sub] + classAdj[c] + ability + ti * 2.5 + (att - 85) * 0.4 + (r() - 0.5) * 14)),
+            Math.min(100, Math.max(18, base[sub]! + classAdj[c]! + ability + ti * 2.5 + (att - 85) * 0.4 + (r() - 0.5) * 14)),
           );
           if (sub === "History" && t === "Term 3") score = null; // not yet recorded
           else if (r() < 0.03) score = null;
@@ -59,7 +59,7 @@ export type Response =
       kind: "answer";
       answer: string[];
       summary: { records: number; filters: string; period: string };
-      chart?: { label: string; value: number }[];
+      chart?: { label: string; value: number }[] | undefined;
       evidence: {
         source: string;
         columns: string[];
@@ -210,8 +210,8 @@ export function analyze(question: string): Response {
       return { key: b.name, avg: r1(mean(xs.map((x) => x.score!))), n: xs.length, students: new Set(xs.map((x) => x.student_ref)).size };
     });
     const valid = res.filter((x) => x.n);
-    const hi = valid[valid.length - 1];
-    const lo = valid[0];
+    const hi = valid[valid.length - 1]!;
+    const lo = valid[0]!;
     return {
       kind: "answer",
       answer: [
@@ -290,12 +290,12 @@ export function analyze(question: string): Response {
   const label = groupKey === "term" ? "Term" : groupKey === "class" ? "Class" : "Subject";
   let answer: string[];
   const sorted = [...valid].sort((a, b) => a.avg - b.avg);
-  const low = sorted[0];
-  const high = sorted[sorted.length - 1];
+  const low = sorted[0]!;
+  const high = sorted[sorted.length - 1]!;
   const scope = [cls.length ? `class ${cls.join(" & ")}` : "", subs.length ? subs.join(" & ") : ""].filter(Boolean).join(", ");
   if (groupKey === "term") {
-    const first = valid[0];
-    const last = valid[valid.length - 1];
+    const first = valid[0]!;
+    const last = valid[valid.length - 1]!;
     const diff = r1(last.avg - first.avg);
     answer = [
       `${scope ? `For ${scope}, the` : "The"} average score moved from ${first.avg} in ${first.key} to ${last.avg} in ${last.key} — a change of ${diff > 0 ? "+" : ""}${diff} points.`,

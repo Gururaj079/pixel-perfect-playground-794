@@ -63,9 +63,9 @@ function group(chats: Chat[]) {
   const startToday = new Date().setHours(0, 0, 0, 0);
   const g: Record<string, Chat[]> = { Today: [], "Previous 7 Days": [], Older: [] };
   chats.forEach((c) => {
-    if (c.createdAt >= startToday) g.Today.push(c);
-    else if (now - c.createdAt < 7 * 86400000) g["Previous 7 Days"].push(c);
-    else g.Older.push(c);
+    if (c.createdAt >= startToday) g["Today"]!.push(c);
+    else if (now - c.createdAt < 7 * 86400000) g["Previous 7 Days"]!.push(c);
+    else g["Older"]!.push(c);
   });
   return g;
 }
